@@ -1,4 +1,4 @@
-name: build-php-8-3
+name: build-php-8-3-without-xdebug
 
 on: workflow_dispatch
 
