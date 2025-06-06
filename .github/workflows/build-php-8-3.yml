@@ -32,5 +32,5 @@ jobs:
           platforms: linux/amd64,linux/arm64
           push: true
           tags: |
-            markoshust/magento-php:8.3-fpm
-            markoshust/magento-php:8.3-fpm-5
+            jeanmarcos/magento-php:8.3-fpm
+            jeanmarcos/magento-php:8.3-fpm-5
