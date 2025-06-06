@@ -27,7 +27,7 @@ services:
       ## Selenium support, replace "magento.test" with URL of your site
       #- "magento.test:172.17.0.1"
       ## Linux, uncomment for Xdebug capabilities:
-      #- "host.docker.internal:host-gateway"
+      - "host.docker.internal:host-gateway"
 
   phpfpm:
     image: markoshust/magento-php:8.3-fpm-4

@@ -1,0 +1,50 @@
+#!/bin/bash
+source env/magento.env
+
+echo "Setting SMTP configuration..."
+bin/n98-magerun2 config:store:set "system/smtp/host" mailcatcher
+bin/n98-magerun2 config:store:set "system/smtp/port" 1025
+bin/n98-magerun2 config:store:set "system/smtp/transport" smtp
+
+echo "Setting base URLs..."
+bin/n98-magerun2 config:store:set "web/unsecure/base_url" "http://$MAGENTO_HOST/"
+bin/n98-magerun2 config:store:set "web/secure/base_url" "https://$MAGENTO_HOST/"
+
+echo "Extending admin session lifetime and setting OpenSearch hostname..."
+bin/n98-magerun2 config:store:set "admin/security/session_lifetime" 31536000
+bin/n98-magerun2 config:store:set "catalog/search/opensearch_server_hostname" opensearch
+
+echo "Setting default cache config..."
+bin/n98-magerun2 config:store:set "system/full_page_cache/caching_application" 1
+
+echo "Creating admin user..."
+bin/magento admin:user:create \
+            --admin-user=$MAGENTO_ADMIN_USER \
+            --admin-password="$MAGENTO_ADMIN_PASSWORD" \
+            --admin-email=$MAGENTO_ADMIN_EMAIL \
+            --admin-firstname=$MAGENTO_ADMIN_FIRST_NAME \
+            --admin-lastname=$MAGENTO_ADMIN_LAST_NAME
+
+echo "Replacing admin login template..."
+ESCAPED_USERNAME=$(printf '%s\n' "$MAGENTO_ADMIN_USER" | sed 's/[&/\]/\\&/g')
+ESCAPED_PASSWORD=$(printf '%s\n' "$MAGENTO_ADMIN_PASSWORD" | sed 's/[&/\]/\\&/g')
+FILE="src/vendor/magento/module-backend/view/adminhtml/templates/admin/login.phtml"
+cp template/magento/2.4.8/login.phtml $FILE
+sed -i -E "s/(id=\"username\")/\1 value=\"$ESCAPED_USERNAME\"/" "$FILE"
+sed -i -E "s/(id=\"login\")/\1 value=\"$ESCAPED_PASSWORD\"/" "$FILE"
+echo "✔️ Login form updated"
+
+echo "Replacing default_head_blocks template..."
+cp template/magento/2.4.8/default_head_blocks.xml src/vendor/magento/module-theme/view/frontend/layout/default_head_blocks.xml
+
+echo "Replacing Magento_Backend/layout/default.xml template..."
+cp template/magento/2.4.8/default.xml src/vendor/magento/theme-adminhtml-backend/Magento_Backend/layout/default.xml
+
+echo "Disabling JS/CSS minification and merging..."
+sed -i \
+-e "s/\('merge_files'\s*=>\s*\)'1'/\1'0'/" \
+-e "s/\('minify_files'\s*=>\s*\)'1'/\1'0'/" \
+-e "s/\('use_css_critical_path'\s*=>\s*\)'1'/\1'0'/" \
+src/app/etc/config.php
+
+echo "✔️ Configuración aplicada: desactivado merge/minify en config.php"
