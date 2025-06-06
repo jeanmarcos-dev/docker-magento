@@ -10,7 +10,7 @@ jobs:
         name: Checkout
         uses: actions/checkout@v4
         with:
-          ref: release/next
+          ref: main
       -
         name: Set up QEMU
         uses: docker/setup-qemu-action@v3
