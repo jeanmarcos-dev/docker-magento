@@ -23,7 +23,36 @@
 
 ## What's New
 
-_Description of custom features added to this fork._
+This fork introduces two key enhancements focused on **developer performance** and **multistore flexibility**:
+
+### 🔀 Dual PHP-FPM Containers (with and without Xdebug)
+
+To significantly improve execution speed during development, this setup now includes:
+
+- A **secondary PHP-FPM container** without Xdebug, used for all requests by default.
+- Nginx is configured to **route requests to the Xdebug-enabled container only when the `XDEBUG_SESSION` cookie is set** (e.g. via the PhpStorm browser extension).
+
+This avoids the overhead of Xdebug during normal development while still allowing step debugging when explicitly needed.
+
+> ℹ️ This workaround anticipates the native solution expected in a future Xdebug release:  
+> https://github.com/xdebug/xdebug/pull/996
+
+---
+
+### 🌐 Multistore Mapping Support
+
+A new file named `multistore-mapping.php` has been added at the project root. This file uses a clean, readable syntax to map HTTP hosts to Magento store codes or website codes.
+
+Example usage:
+
+```php
+match ($_SERVER['HTTP_HOST']) {
+    'store1.local'       => setStore('store1'),
+    'admin.store.local'  => setWebsite('admin_website'),
+    default              => setStore('default'),
+};
+
+This makes it easy to work with multiple domains in a local environment, without modifying Nginx.
 
 ---
 
