@@ -12,7 +12,7 @@
 
 services:
   app:
-    image: markoshust/magento-nginx:1.24-0
+    image: jeanmarcos/magento-nginx:1.24
     ports:
       - "80:8000"
       - "443:8443"
@@ -23,17 +23,23 @@ services:
       - appdata:/var/www/html
       - sockdata:/sock
       - ssldata:/etc/nginx/certs
-    #extra_hosts: &appextrahosts
+    extra_hosts: &appextrahosts
       ## Selenium support, replace "magento.test" with URL of your site
       #- "magento.test:172.17.0.1"
       ## Linux, uncomment for Xdebug capabilities:
       - "host.docker.internal:host-gateway"
 
   phpfpm:
-    image: markoshust/magento-php:8.3-fpm-4
+    image: jeanmarcos/magento-php:8.4-fpm
     volumes: *appvolumes
     env_file: env/phpfpm.env
-    #extra_hosts: *appextrahosts
+    extra_hosts: *appextrahosts
+  
+  phpfpm-without-xdebug:
+    image: jeanmarcos/magento-php-without-xdebug:8.4-fpm
+    volumes: *appvolumes
+    env_file: env/phpfpm.env
+    extra_hosts: *appextrahosts
 
   db:
     image: mariadb:11.4
