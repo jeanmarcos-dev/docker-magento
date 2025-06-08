@@ -30,13 +30,21 @@ This fork introduces two key enhancements focused on **developer performance** a
 To significantly improve execution speed during development, this setup now includes:
 
 - A **secondary PHP-FPM container** without Xdebug, used for all requests by default.
-- Nginx is configured to **route requests to the Xdebug-enabled container only when the `XDEBUG_SESSION` cookie is set** (e.g. via the PhpStorm browser extension).
+- Nginx is configured to **route requests to the Xdebug-enabled container only when the `XDEBUG_SESSION` cookie is set** (e.g. via Chrome Xdebug Helper extension).
+
 
 This avoids the overhead of Xdebug during normal development while still allowing step debugging when explicitly needed.
 
 > ℹ️ This workaround anticipates the native solution expected in a future Xdebug release:  
 > https://github.com/xdebug/xdebug/pull/996
 
+#### ✅ How to enable Xdebug
+
+1. First, run the following command to enable Xdebug inside the container (this is required):
+   ```bash
+   bin/xdebug enable
+   ```
+   
 ---
 
 ### 🌐 Multistore Mapping Support
@@ -51,6 +59,7 @@ match ($_SERVER['HTTP_HOST']) {
     'admin.store.local'  => setWebsite('admin_website'),
     default              => setStore('default'),
 };
+```
 
 This makes it easy to work with multiple domains in a local environment, without modifying Nginx.
 
