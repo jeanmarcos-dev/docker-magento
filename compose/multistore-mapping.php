@@ -20,9 +20,7 @@ function setWebsite(string $code): void
     $_SERVER['MAGE_RUN_CODE'] = $code;
 }
 
-// $host = $_SERVER['HTTP_HOST'];
-
-// match ($host) {
+// match ($_SERVER['HTTP_HOST']) {
 //     // Store mappings
 //     'store1.local'       => setStore('store1'),
 //     'store2.local'       => setStore('store2'),
