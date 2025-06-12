@@ -5,3 +5,6 @@ services:
 
   phpfpm:
     volumes: *appvolumes
+    
+  phpfpm-without-xdebug:
+    volumes: *appvolumes
