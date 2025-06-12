@@ -1,0 +1,7 @@
+services:
+  app:
+    volumes: &appvolumes
+      - ./config/nginx/default-with-hmr-support.conf:/etc/nginx/conf.d/default.conf:cached
+
+  phpfpm:
+    volumes: *appvolumes
