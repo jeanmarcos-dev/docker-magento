@@ -7,5 +7,6 @@ COPY conf/msmtprc /etc/msmtprc
 COPY conf/php.ini $PHP_INI_DIR
 COPY conf/php-fpm.conf /usr/local/etc/
 COPY conf/www.conf /usr/local/etc/php-fpm.d/
-
+USER root
 RUN npm install -g pnpm
+USER app:app
