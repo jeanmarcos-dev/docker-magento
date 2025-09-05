@@ -10,15 +10,14 @@ RUN set -eux; \
         $PHPIZE_DEPS; \
     rm -rf /var/lib/apt/lists/*
 
-# RUN install -d /usr/local/etc \
-#  && printf "<?php // build-time stub\n" > /var/www/html/multistore-mapping.php
+RUN install -d /usr/local/etc \
+ && printf "<?php // build-time stub\n" > /var/www/html/multistore-mapping.php
 
 RUN set -eux; \
-    yes '' | php \
-      -d auto_prepend_file= \
-      -d auto_append_file= \
-      /usr/local/bin/pecl install -f mongodb-1.18.1; \
-    docker-php-ext-enable mongodb || echo "extension=mongodb.so" > "$PHP_INI_DIR/conf.d/docker-php-ext-mongodb.ini"
+    yes '' | pecl install -f mongodb-1.18.1; \
+    extdir="$(php-config --extension-dir)"; \
+    test -f "$extdir/mongodb.so"; \
+    echo "extension=mongodb.so" > "$PHP_INI_DIR/conf.d/docker-php-ext-mongodb.ini"
 
 USER app:app
 

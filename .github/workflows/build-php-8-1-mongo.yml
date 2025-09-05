@@ -34,3 +34,4 @@ jobs:
           tags: |
             jeanmarcos/magento-php:8.1-mongo-fpm
             jeanmarcos/magento-php:8.1-mongo-fpm-0
+            jeanmarcos/magento-php:8.1-mongo-fpm-1
